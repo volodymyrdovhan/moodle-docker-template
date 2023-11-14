@@ -1,0 +1,12 @@
+version: '3.5'
+
+services:
+
+  moodle_adminer:
+    container_name: moodle_adminer
+    build:
+      context: ./docker/adminer
+    ports:
+      - "8283:8080"
+    networks:
+      - moodleshared

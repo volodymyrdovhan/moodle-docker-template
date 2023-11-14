@@ -1,0 +1,14 @@
+version: '3.5'
+
+services:
+
+  moodle_phpmyadmin:
+    container_name: moodle_phpmyadmin
+    image: phpmyadmin/phpmyadmin:latest
+    restart: always
+    ports:
+      - 8205:80
+    environment:
+      - "PMA_HOSTS=moodle_db"
+    networks:
+      - moodleshared

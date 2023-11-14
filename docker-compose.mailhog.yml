@@ -1,0 +1,13 @@
+version: '3.5'
+
+services:
+
+  moodle_mailhog:
+    container_name: moodle_mailhog
+    image: mailhog/mailhog:latest
+    ports:
+      - 8025:8025
+    networks:
+      moodleshared:
+        aliases:
+          - moodle-mailhog.local

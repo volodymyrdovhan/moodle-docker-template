@@ -1,0 +1,40 @@
+FROM php:7.4-fpm-alpine
+
+# php setup
+RUN apk update && \
+    apk add --no-cache $PHPIZE_DEPS \
+        libxml2-dev \
+        libpng-dev \
+        icu-dev \
+        postgresql-dev \
+        libmcrypt-dev \
+        libzip-dev \
+        exiftool \
+        linux-headers \
+    && docker-php-ext-install \
+        soap \
+        zip \
+        gd \
+        intl \
+        pdo \
+        pdo_mysql \
+        mysqli \
+        pgsql \
+        opcache \
+        exif \
+    && pecl install -o -f redis \
+        xmlrpc xhprof excimer \
+        && rm -rf /tmp/pear \
+        && docker-php-ext-enable xhprof \
+        && docker-php-ext-enable excimer \
+        && docker-php-ext-enable redis \
+        && docker-php-ext-enable xmlrpc \
+    && apk add git openssh
+
+COPY ./opcache.ini /usr/local/etc/php/conf.d/opcache.ini
+COPY ./php.ini /usr/local/etc/php/conf.d/php.ini
+
+RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
+
+# Expose port 9000
+EXPOSE 9000

@@ -1,0 +1,1 @@
+CREATE DATABASE moodle_local;

@@ -1,0 +1,29 @@
+version: '3.5'
+
+services:
+
+  moodle_db:
+    container_name: moodle_db
+    image: postgres:13
+    command: postgres -c listen_addresses='*'
+    volumes:
+      - ./database/postgres_13/data:/var/lib/postgresql/data
+    environment:
+      - "POSTGRES_USER=root"
+      - "POSTGRES_PASSWORD=12345"
+#      - "POSTGRES_DB=moodle_local"
+    networks:
+      - moodleshared
+
+  moodle_php:
+    environment:
+      - "MOODLE_DOCKER_DBTYPE=pgsql"
+
+  moodle_php_cli:
+    environment:
+      - "MOODLE_DOCKER_DBTYPE=pgsql"
+
+networks:
+  moodleshared:
+    external: false
+    name: moodleshared

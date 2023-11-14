@@ -1,0 +1,76 @@
+version: '3.5'
+
+services:
+
+  moodle_nginx:
+    build:
+      context: ./docker/nginx
+      dockerfile: Dockerfile
+    image: moodlelocal/nginx:v1
+    container_name: moodle_nginx
+    depends_on:
+      - moodle_db
+    volumes:
+      - ./src/:/var/www/html/
+      - ./docker/nginx/logs/:/var/log/nginx/
+      - ./docker/nginx/ssl/:/etc/ssl/
+    ports:
+      - 8202:8202
+    networks:
+      moodleshared:
+        aliases:
+          - moodle.local
+#          - totara.local
+
+  moodle_php:
+    build:
+      context: ./docker/php-fpm
+      dockerfile: Dockerfile81
+    image: moodlelocal/php81:v1
+    container_name: moodle_php
+    volumes:
+      - ./src/:/var/www/html/
+      - ./moodledata/:/var/www/html/moodledata/
+    networks:
+      - moodleshared
+    environment:
+      - "MOODLE_DOCKER_DBTYPE=mysqli"
+
+  moodle_php_cli:
+    build:
+      context: ./docker/php-cli
+      dockerfile: Dockerfile81
+    image: moodlelocal/php81_cli:v1
+    container_name: moodle_php_cli
+    volumes:
+      - ./src/:/var/www/html/
+      - ./moodledata/:/var/www/html/moodledata/
+    networks:
+      - moodleshared
+    environment:
+      - "MOODLE_DOCKER_DBTYPE=mysqli"
+
+  moodle_redis:
+    image: redis:6-alpine
+    container_name: moodle_redis
+    networks:
+      - moodleshared
+
+  moodle_db:
+    container_name: moodle_db
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - ./database/mysql_80/:/var/lib/mysql
+      - ./database/init/:/docker-entrypoint-initdb.d/
+    environment:
+      - "MYSQL_ROOT_PASSWORD=12345"
+    ports:
+      - "33075:3306"
+    networks:
+      - moodleshared
+
+networks:
+  moodleshared:
+    external: false
+    name: moodleshared

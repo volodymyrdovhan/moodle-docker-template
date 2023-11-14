@@ -1,0 +1,23 @@
+version: '3.5'
+
+services:
+
+  moodle_db:
+    container_name: moodle_db
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - ./database/mysql_80/:/var/lib/mysql
+      - ./database/init/:/docker-entrypoint-initdb.d/
+    environment:
+      - "MYSQL_ROOT_PASSWORD=12345"
+    ports:
+      - "33075:3306"
+
+  moodle_php:
+    environment:
+      - "MOODLE_DOCKER_DBTYPE=mysqli"
+
+  moodle_php_cli:
+    environment:
+      - "MOODLE_DOCKER_DBTYPE=mysqli"

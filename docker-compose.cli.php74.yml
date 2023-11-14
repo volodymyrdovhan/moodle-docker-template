@@ -1,0 +1,15 @@
+version: '3.5'
+
+services:
+
+  moodle_php_cli:
+    build:
+      context: ./docker/php-cli
+      dockerfile: Dockerfile74
+    image: moodlelocal/php74_cli:v1
+    container_name: moodle_php_cli
+    volumes:
+      - ./src/:/var/www/html/
+      - ./moodledata/:/var/www/html/moodledata/
+    networks:
+      - moodleshared

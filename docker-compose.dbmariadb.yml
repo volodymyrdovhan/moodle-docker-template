@@ -1,0 +1,23 @@
+version: '3.5'
+
+services:
+
+  moodle_db:
+    container_name: moodle_db
+    image: mariadb:10.7.5
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - ./database/mariadb_107/:/var/lib/mysql
+      - ./database/init/:/docker-entrypoint-initdb.d/
+    environment:
+      - "MYSQL_ROOT_PASSWORD=12345"
+    networks:
+      - moodleshared
+
+  moodle_php:
+    environment:
+      - "MOODLE_DOCKER_DBTYPE=mariadb"
+
+  moodle_php_cli:
+    environment:
+      - "MOODLE_DOCKER_DBTYPE=mariadb"

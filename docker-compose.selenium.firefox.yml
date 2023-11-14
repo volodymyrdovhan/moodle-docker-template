@@ -1,0 +1,23 @@
+version: '3.5'
+
+services:
+
+  moodle_php:
+    environment:
+      - "MOODLE_DOCKER_BROWSER=firefox"
+
+  moodle_php_cli:
+    environment:
+      - "MOODLE_DOCKER_BROWSER=firefox"
+
+  selenium:
+    image: "selenium/standalone-firefox-debug:3"
+    ports:
+      - "127.0.0.1:5900:5900"
+    volumes:
+      - ./src/moodle.local/:/var/www/html/moodle.local:ro
+      - ./moodledata/moodle_local:/var/www/moodledata/moodle_local
+      - /dev/shm:/dev/shm
+    environment:
+      # Workaround for https://github.com/SeleniumHQ/docker-selenium/issues/227
+      "no_proxy": localhost
